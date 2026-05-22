@@ -13,11 +13,20 @@ i18n.use(initReactI18next).init({
   },
 });
 
+const localeAliases: Record<string, string> = {
+  zh: "zh-Hans",
+  "zh-CN": "zh-Hans",
+  "zh-SG": "zh-Hans",
+  "zh-TW": "zh-Hans",
+  "zh-Hant": "zh-Hans",
+};
+
 export async function loadLanguage(lang: string): Promise<void> {
   if (lang === "en") return;
-  if (i18n.hasResourceBundle(lang, "translation")) return;
-  const messages = await import(`./locales/${lang}.json`);
-  i18n.addResourceBundle(lang, "translation", messages.default);
+  const resolved = localeAliases[lang] ?? lang;
+  if (i18n.hasResourceBundle(resolved, "translation")) return;
+  const messages = await import(`./locales/${resolved}.json`);
+  i18n.addResourceBundle(resolved, "translation", messages.default);
 }
 
 export default i18n;
